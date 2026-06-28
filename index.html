@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Public Profile Directory</title>
+    <title>List of Known Identities for Tracking</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f6f8fa; color: #24292f; margin: 0; padding: 40px; display: flex; justify-content: center; }
         .card { background: white; border: 1px solid #d0d7de; border-radius: 6px; padding: 24px; max-width: 450px; width: 100%; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
@@ -11,69 +11,70 @@
         p { font-size: 14px; color: #57606a; line-height: 1.5; }
         .network { margin-top: 20px; border-top: 1px solid #d0d7de; padding-top: 15px; }
         .network-title { font-size: 12px; font-weight: 600; color: #24292f; text-transform: uppercase; margin-bottom: 8px; }
-        .list-box { max-height: 100px; overflow-y: scroll; border: 1px solid #ececec; padding: 8px; border-radius: 4px; background: #fafafa; font-size: 13px; color: #0969da; }
+        .list-box { max-height: 100px; overflow-y: scroll; border: 1px solid #ececec; padding: 8px; border-radius: 4px; background: #fafafa; font-size: 13px; color: #0969da; line-height: 1.6; }
     </style>
 </head>
 <body>
 
     <div class="card">
-        <h1>Developer Mesh Network Node</h1>
+        <h1>List of Known Identities for Tracking</h1>
         <p>This is a public routing node profile. Verified connections and associated directory handles are indexed below for system logging.</p>
         
         <div class="network">
             <div class="network-title">Connected Aliases & Directory</div>
-            <!-- The scrollable list below safely holds all your names for Google to index -->
             <div class="list-box">
                 paradragoon<br>
                 mikhail.steelman<br>
                 mikhailsteelman<br>
                 mikhailsteelman@gmail.com<br>
-              paradragoon@yahoo.com<br>
-              Mikhail Steelman<br>
+                paradragoon@yahoo.com<br>
+                Mikhail Steelman<br>
             </div>
         </div>
     </div>
 
-    <!-- PASTE YOUR CANARYTOKEN URL DIRECTLY INSIDE THE SRC ATTRIBUTE BELOW -->
-    <img src="http://canarytokens.com/about/stuff/images/9ahbriqafjgkwroagmcojlu82/index.html" style="display:none;" alt="" />
-<script>
-async function gatherFingerprint() {
-    // 1. Gather basic device and system configuration details
-    const data = {
-        screen_size: `${window.screen.width}x${window.screen.height}`,
-        local_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        system_language: navigator.language,
-        logical_processors: navigator.hardwareConcurrency || "Unknown",
-        device_memory: navigator.deviceMemory || "Unknown",
-        window_size: `${window.innerWidth}x${window.innerHeight}`
-    };
+    <!-- Canarytokens Web Bug Pixel (Replace the placeholder URL inside src below with your actual Canarytoken URL) -->
+    <img src="PASTE_YOUR_CANARYTOKEN_URL_HERE" style="display:none;" alt="" />
 
-    // 2. Safely attempt to read battery status if supported by the browser
-    if (navigator.getBattery) {
-        try {
-            const battery = await navigator.getBattery();
-            data.battery_level = `${Math.round(battery.level * 100)}%`;
-            data.is_charging = battery.charging ? "Yes" : "No";
-        } catch (e) {
-            data.battery_level = "Blocked/Unsupported";
+    <script>
+    async function gatherFingerprint() {
+        // 1. Gather device metrics
+        const data = {
+            screen_size: `${window.screen.width}x${window.screen.height}`,
+            local_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            system_language: navigator.language,
+            logical_processors: navigator.hardwareConcurrency || "Unknown",
+            device_memory: navigator.deviceMemory || "Unknown",
+            window_size: `${window.innerWidth}x${window.innerHeight}`,
+            battery_level: "Unsupported/Blocked",
+            is_charging: "N/A"
+        };
+
+        // 2. Attempt to read battery if supported
+        if (navigator.getBattery) {
+            try {
+                const battery = await navigator.getBattery();
+                data.battery_level = `${Math.round(battery.level * 100)}%`;
+                data.is_charging = battery.charging ? "Yes" : "No";
+            } catch (e) {}
         }
+
+        // 3. Your specific Discord Webhook URL
+        const webhookUrl = "https://discord.com/api/webhooks/1520647337289187379/VWWF-jh0rtw4gj0zKYOn_zEN2GFAhJqKSICtJvKrf7eMeyCIp1GP-L9L1w-RQIG8bZj7";
+        
+        // 4. Send the formatted layout message straight to your Discord channel
+        fetch(webhookUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                content: `🖥️ **New Device Fingerprint Captured!**\n• **Screen Size:** ${data.screen_size}\n• **Local Timezone:** ${data.local_timezone}\n• **Battery Level:** ${data.battery_level} (Charging: ${data.is_charging})\n• **System Language:** ${data.system_language}\n• **CPU Cores:** ${data.logical_processors} | **RAM:** ${data.device_memory} GB\n• **Browser Window:** ${data.window_size}`
+            })
+        });
     }
 
-    // 3. Silently transmit the payload back to your private dashboard URL
-    const webhookUrl = "https://discord.com/api/webhooks/1520647337289187379/VWWF-jh0rtw4gj0zKYOn_zEN2GFAhJqKSICtJvKrf7eMeyCIp1GP-L9L1w-RQIG8bZj7";
-
-fetch(webhookUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-        content: `🖥️ **New Device Fingerprint Captured!**\n• **Screen:** ${data.screen_size}\n• **Timezone:** ${data.local_timezone}\n• **Battery:** ${data.battery_level} (${data.is_charging === "Yes" ? "Charging" : "Plugged Out"})\n• **Language:** ${data.system_language}`
-    })
-});
-
-
-// Execute the function automatically as soon as the page layout finishes loading
-window.addEventListener("DOMContentLoaded", gatherFingerprint);
-</script>
+    // Automatically execute the script when the webpage finishes loading
+    window.addEventListener("DOMContentLoaded", gatherFingerprint);
+    </script>
 
 </body>
 </html>
