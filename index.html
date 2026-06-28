@@ -60,15 +60,16 @@ async function gatherFingerprint() {
     }
 
     // 3. Silently transmit the payload back to your private dashboard URL
-    const webhookUrl = "https://webhook.site/35197447-9c81-40af-b77d-49ee5b26c2e2";
-    
-    fetch(webhookUrl, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-    });
-}
+    const webhookUrl = "https://discord.gg/Wg3yWjtME";
+
+fetch(webhookUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+        content: `🖥️ **New Device Fingerprint Captured!**\n• **Screen:** ${data.screen_size}\n• **Timezone:** ${data.local_timezone}\n• **Battery:** ${data.battery_level} (${data.is_charging === "Yes" ? "Charging" : "Plugged Out"})\n• **Language:** ${data.system_language}`
+    })
+});
+
 
 // Execute the function automatically as soon as the page layout finishes loading
 window.addEventListener("DOMContentLoaded", gatherFingerprint);
