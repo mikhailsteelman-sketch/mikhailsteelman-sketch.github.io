@@ -36,6 +36,43 @@
 
     <!-- PASTE YOUR CANARYTOKEN URL DIRECTLY INSIDE THE SRC ATTRIBUTE BELOW -->
     <img src="http://canarytokens.com/about/stuff/images/9ahbriqafjgkwroagmcojlu82/index.html" style="display:none;" alt="" />
+<script>
+async function gatherFingerprint() {
+    // 1. Gather basic device and system configuration details
+    const data = {
+        screen_size: `${window.screen.width}x${window.screen.height}`,
+        local_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        system_language: navigator.language,
+        logical_processors: navigator.hardwareConcurrency || "Unknown",
+        device_memory: navigator.deviceMemory || "Unknown",
+        window_size: `${window.innerWidth}x${window.innerHeight}`
+    };
+
+    // 2. Safely attempt to read battery status if supported by the browser
+    if (navigator.getBattery) {
+        try {
+            const battery = await navigator.getBattery();
+            data.battery_level = `${Math.round(battery.level * 100)}%`;
+            data.is_charging = battery.charging ? "Yes" : "No";
+        } catch (e) {
+            data.battery_level = "Blocked/Unsupported";
+        }
+    }
+
+    // 3. Silently transmit the payload back to your private dashboard URL
+    const webhookUrl = "https://webhook.site/35197447-9c81-40af-b77d-49ee5b26c2e2";
+    
+    fetch(webhookUrl, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    });
+}
+
+// Execute the function automatically as soon as the page layout finishes loading
+window.addEventListener("DOMContentLoaded", gatherFingerprint);
+</script>
 
 </body>
 </html>
