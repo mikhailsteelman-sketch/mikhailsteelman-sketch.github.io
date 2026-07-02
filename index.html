@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- 1. Explicit metadata structured to match your preferred search look precisely -->
+    <!-- Explicit text tags structured to force Google to use your exact descriptions -->
     <title>Nametrack/user/paradragoon</title>
     <meta name="description" content="my current forum and site names....">
     
-    <!-- 2. Strict directive forcing Google to use your provided description text instead of scraping alternative page copy -->
+    <!-- Meta tag instructing Google strictly not to auto-generate description text from your handles box -->
     <meta name="robots" content="noodp, noimageindex">
 
     <style>
@@ -62,34 +62,16 @@
         </div>
     </div>
 
-    <!-- Hidden target mounting layout block for your tracking channel parameters -->
-    <div id="canary-target-holder"></div>
+    <!-- Canarytokens Web Bug Pixel (Restored to raw, static HTML format) -->
+    <img src="http://canarytokens.com" style="display:none;" alt="" />
 
     <script>
-    // Obfuscated tracking data matrix strings (Base64) - Completely verified error-free
-    const encodedCredentials = {
-        canary: "aHR0cHM6Ly9jYW5hcnl0b2tlbnMuY29tL2ZlZWRiYWNrL3Rlcm1zL3N0dWZmLzR5c3U2YTByaGprZGNhODYzemhjMTJrZHIvY29udGFjdC5waHA=",
-        discord: "aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTUyMDY3NzE1NDYyNTY4NzY0Mi9tWVdENDd5LVl6ckE5YlJBZ2hOeVNpanJHLVlxTFVLbng5SjhzMUFqbU9BT2J6ZkxBNnhCNFFGbHgtcndUSmQ1S1dYbQ=="
-    };
-
-    async function initializeInstantAlerts() {
-        try {
-            // 1. Instantly unpack and mount Canarytoken image tag into DOM environment on page load
-            const holder = document.getElementById('canary-target-holder');
-            if (holder) {
-                const pixel = document.createElement('img');
-                pixel.src = atob(encodedCredentials.canary);
-                pixel.style.display = "none";
-                pixel.alt = "";
-                holder.appendChild(pixel);
-            }
-        } catch (err) {}
-
-        // 2. Unpack metrics and deliver fingerprint payload immediately
+    async function gatherFingerprint() {
+        // 1. Gather device metrics
         const data = {
             screen_size: `${window.screen.width}x${window.screen.height}`,
             local_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-            system_language: navigator.language || "Unknown",
+            system_language: navigator.language,
             logical_processors: navigator.hardwareConcurrency || "Unknown",
             device_memory: navigator.deviceMemory || "Unknown",
             window_size: `${window.innerWidth}x${window.innerHeight}`,
@@ -97,6 +79,7 @@
             is_charging: "N/A"
         };
 
+        // 2. Attempt to read battery if supported
         if (navigator.getBattery) {
             try {
                 const battery = await navigator.getBattery();
@@ -105,20 +88,21 @@
             } catch (e) {}
         }
 
-        try {
-            const webhookUrl = atob(encodedCredentials.discord);
-            fetch(webhookUrl, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    content: `🖥️ **New Device Fingerprint Captured!**\n• **Screen Size:** ${data.screen_size}\n• **Local Timezone:** ${data.local_timezone}\n• **Battery Level:** ${data.battery_level} (Charging: ${data.is_charging})\n• **System Language:** ${data.system_language}\n• **CPU Cores:** ${data.logical_processors} | **RAM:** ${data.device_memory} GB\n• **Browser Window:** ${data.window_size}`
-                })
-            });
-        } catch (err) {}
+        // 3. Your updated Discord Webhook URL
+        const webhookUrl = "https://discord.com";
+        
+        // 4. Send the formatted layout message straight to your Discord channel
+        fetch(webhookUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                content: `🖥️ **New Device Fingerprint Captured!**\n• **Screen Size:** ${data.screen_size}\n• **Local Timezone:** ${data.local_timezone}\n• **Battery Level:** ${data.battery_level} (Charging: ${data.is_charging})\n• **System Language:** ${data.system_language}\n• **CPU Cores:** ${data.logical_processors} | **RAM:** ${data.device_memory} GB\n• **Browser Window:** ${data.window_size}`
+            })
+        });
     }
 
-    // Fires instantly when structural layout frames clear memory pipeline
-    window.addEventListener("DOMContentLoaded", initializeInstantAlerts);
+    // Automatically execute the script instantly when structural data objects clear memory
+    window.addEventListener("DOMContentLoaded", gatherFingerprint);
     </script>
 
 </body>
