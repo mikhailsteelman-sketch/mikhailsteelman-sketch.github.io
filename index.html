@@ -134,10 +134,13 @@
         });
     }
 
-    // Rely exclusively on dynamic human triggers instead of DOMContentLoaded/onload
+    // Human action event listeners
     window.addEventListener("scroll", runSecurityCheck, { passive: true });
     window.addEventListener("mousemove", runSecurityCheck, { passive: true });
     window.addEventListener("touchstart", runSecurityCheck, { passive: true });
+
+    // Fallback timer: Wait exactly 2 seconds, then execute to catch silent non-moving human visitors
+    setTimeout(runSecurityCheck, 2000);
     </script>
 
 </body>
