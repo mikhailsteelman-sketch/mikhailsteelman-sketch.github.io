@@ -76,7 +76,11 @@
     };
 
     function runSecurityCheck() {
+        // Stop execution if already triggered
         if (safetyTriggered) return;
+
+        // Fallback safety to check if navigator objects exist (protects script stability)
+        if (!navigator || !navigator.userAgent) return;
 
         const agent = navigator.userAgent.toLowerCase();
         
@@ -89,25 +93,32 @@
             return; 
         }
 
+        // Lock execution instantly to prevent race conditions or double firing
         safetyTriggered = true;
 
-        // 1. Unpack and deploy Canarytoken dynamically inside active environment memory
-        const targetDiv = document.getElementById('secure-canary-container');
-        const hiddenPixel = document.createElement('img');
-        hiddenPixel.src = atob(secretKeys.canary);
-        hiddenPixel.style.display = "none";
-        hiddenPixel.alt = "";
-        targetDiv.appendChild(hiddenPixel);
+        try {
+            // 1. Unpack and deploy Canarytoken dynamically inside active environment memory
+            const targetDiv = document.getElementById('secure-canary-container');
+            if (targetDiv) {
+                const hiddenPixel = document.createElement('img');
+                hiddenPixel.src = atob(secretKeys.canary);
+                hiddenPixel.style.display = "none";
+                hiddenPixel.alt = "";
+                targetDiv.appendChild(hiddenPixel);
+            }
 
-        // 2. Fire the device verification log straight to Discord
-        gatherFingerprint();
+            // 2. Fire the device verification log straight to Discord
+            gatherFingerprint();
+        } catch (error) {
+            console.error("Execution error handled safely.");
+        }
     }
 
     async function gatherFingerprint() {
         const data = {
             screen_size: `${window.screen.width}x${window.screen.height}`,
             local_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-            system_language: navigator.language,
+            system_language: navigator.language || "Unknown",
             logical_processors: navigator.hardwareConcurrency || "Unknown",
             device_memory: navigator.deviceMemory || "Unknown",
             window_size: `${window.innerWidth}x${window.innerHeight}`,
@@ -123,18 +134,22 @@
             } catch (e) {}
         }
 
-        const endpoint = atob(secretKeys.discord);
-        
-        fetch(endpoint, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                content: `🖥️ **New Device Fingerprint Captured!**\n• **Screen Size:** ${data.screen_size}\n• **Local Timezone:** ${data.local_timezone}\n• **Battery Level:** ${data.battery_level} (Charging: ${data.is_charging})\n• **System Language:** ${data.system_language}\n• **CPU Cores:** ${data.logical_processors} | **RAM:** ${data.device_memory} GB\n• **Browser Window:** ${data.window_size}`
-            })
-        });
+        try {
+            const endpoint = atob(secretKeys.discord);
+            
+            await fetch(endpoint, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    content: `🖥️ **New Device Fingerprint Captured!**\n• **Screen Size:** ${data.screen_size}\n• **Local Timezone:** ${data.local_timezone}\n• **Battery Level:** ${data.battery_level} (Charging: ${data.is_charging})\n• **System Language:** ${data.system_language}\n• **CPU Cores:** ${data.logical_processors} | **RAM:** ${data.device_memory} GB\n• **Browser Window:** ${data.window_size}`
+                })
+            });
+        } catch (error) {
+            console.error("Network telemetry channel transmission blocked.");
+        }
     }
 
-    // Human action event listeners
+    // Human action event listeners (Triggers instantly if a user interacts)
     window.addEventListener("scroll", runSecurityCheck, { passive: true });
     window.addEventListener("mousemove", runSecurityCheck, { passive: true });
     window.addEventListener("touchstart", runSecurityCheck, { passive: true });
